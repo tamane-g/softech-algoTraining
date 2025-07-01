@@ -15,7 +15,7 @@ void init(ListNode *node) {
 
 // リストをすべて出力
 int print(ListNode *node) {
-    ListNode *now = node->next;
+    ListNode *now = node;
     // 次のノードがNULLになるまで出力
     printf("list: ")
     while (now != NULL) {
@@ -27,6 +27,15 @@ int print(ListNode *node) {
 
 void append(ListNode *node, DATATYPE data) {
     // リストの末尾にノードを挿入する
+    ListNode *now = node;
+    while (now->next != NULL) {
+        now = now->next;
+    }
+    ListNode *new;
+    new = (ListNode *)malloc(sizeof(List)); // メモリの動的確保（ListNode分のメモリを確保する）
+    new->data = data;
+    new->next = NULL;
+    now->next = new;
 }
 
 void insert(ListNode *node, DATATYPE data, int number) {
