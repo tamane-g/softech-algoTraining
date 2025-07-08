@@ -4,6 +4,7 @@
 #define DATATYPE int
 
 typedef struct listNode {
+    struct listNode *prev;
     DATATYPE data;
     struct listNode *next;
 } ListNode;
@@ -12,6 +13,7 @@ typedef struct listNode {
 // アドレスを受け取り、参照することで関数から直接アクセスする
 void init(ListNode *node) {
     node->next = NULL;
+    node->prev = NULL;
 }
 
 // リストをすべて出力
@@ -34,6 +36,7 @@ void append(ListNode *node, DATATYPE data) {
         now = now->next;
     }
     new = (ListNode *)malloc(sizeof(ListNode)); // メモリの動的確保（ListNode分のメモリを確保する）
+    new->prev = now;
     new->data = data;
     new->next = NULL;
     now->next = new;
@@ -48,6 +51,7 @@ void insert(ListNode *node, DATATYPE data, int number) {
         now = now->next;
     
     new = (ListNode *)malloc(sizeof(ListNode));
+    new->prev = now;
     new->next = now->next;
     new->data = data;
     now->next = new;
@@ -74,17 +78,11 @@ DATATYPE dequeue(ListNode *node) {
     // リストの先頭のdataを取得して削除
     // 2番目を先頭にする
     DATATYPE buf = node->next->data;
-    ListNode *prev, *now = node->next;
+    ListNode *now = node->next->next;
     
-    while (now->next != NULL) {
-        now->data = now->next->data;
-        prev = now;
-        now = now->next;
-    }
-    
-    free(prev->next);
-    prev->next = NULL;
-    
+    free(now->prev);
+    now->prev = node;
+    node->next = now;
     return buf;
 }
 
@@ -103,6 +101,7 @@ DATATYPE delete(ListNode *node, int number) {
     now = now->next;
     free(prev->next);
     prev->next = now;
+    now->prev = prev;
     
     return buf;
 }
