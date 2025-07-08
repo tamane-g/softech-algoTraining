@@ -17,7 +17,7 @@ void init(ListNode *node) {
 
 // リストをすべて出力
 int print(ListNode *node) {
-    ListNode *now = node;
+    ListNode *now = node->next;
     // 次のノードがNULLになるまで出力
     printf("list: ");
     while (now != NULL) {
@@ -77,8 +77,8 @@ DATATYPE dequeue(ListNode *node) {
 	/*if (node == NULL )
 		return NULL;
 	*/
-	ListNode *temp = node;
-	node = node->next;
+	ListNode *temp = node->next;
+	node->next = node->next->next;
 	return temp->data;
 }
 
