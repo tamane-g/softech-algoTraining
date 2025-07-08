@@ -6,6 +6,7 @@
 typedef struct listNode {
     DATATYPE data;
     struct listNode *next;
+	struct listNode *prev;
 } ListNode;
 
 // 初期化
@@ -35,8 +36,9 @@ void append(ListNode *node, DATATYPE data) {
 	ListNode *new;
 	new = (ListNode *)malloc(sizeof(ListNode));
 	new->data = data;
-	new->next = NULL;
+	new->next = now->next;
 	now->next = new;
+	new->prev = now;
 	print(node);
 }
 
@@ -49,8 +51,9 @@ void insert(ListNode *node, DATATYPE data, int number) {
 		now = now->next;
 	}
 	ListNode *new = malloc(sizeof(ListNode));
-	new->data = data;
 	new->next = now->next;
+	new->data = data;
+	now->next = new;
 	now->next = new;
 	print(node);
 }
@@ -85,23 +88,16 @@ DATATYPE delete(ListNode *node, int number) {
 	/*
 	if (node == NULL )
 		return NULL;
-	*/
-	if (number == 0) 
-		return dequeue(node);
-	
-	ListNode *current = node;
-	for (int i = 0; i < number-1 && current->next != NULL; i++)
-		current = current->next;
-	/*
-		if (current->next == NULL) {
-		printf("Invalid index\n");
-		return node;
-	}
-	*/
-	ListNode *temp = current->next;
-	current->next = temp->next;
-	//free(temp);
-	return temp->data;
+	*/	
+	ListNode *p, *n;
+	p = node;
+
+	for (int i = 0; i < number && p != NULL; i++)
+		p = p->next;
+
+	n = p->next->next;
+	free(p->next);
+	p->next = n;
 }
 
 int main() {
