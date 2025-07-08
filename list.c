@@ -1,10 +1,11 @@
 #include <stdio.h> // 標準入出力ライブラリをインクルード
+#include <stdlib.h>
 
 #define DATATYPE int
 
 typedef struct listNode {
     DATATYPE data;
-    ListNode *next;
+    struct listNode *next;
 } ListNode;
 
 // 初期化
@@ -15,9 +16,9 @@ void init(ListNode *node) {
 
 // リストをすべて出力
 int print(ListNode *node) {
-    ListNode *now = node->next;
+    ListNode *now = node;
     // 次のノードがNULLになるまで出力
-    printf("list: ")
+    printf("list: ");
     while (now != NULL) {
         printf("%d ", now->data);
         now = now->next;
@@ -27,25 +28,80 @@ int print(ListNode *node) {
 
 void append(ListNode *node, DATATYPE data) {
     // リストの末尾にノードを挿入する
+	ListNode *now = node;
+	while (now->next != NULL) {
+		now = now->next;
+	}
+	ListNode *new;
+	new = (ListNode *)malloc(sizeof(ListNode));
+	new->data = data;
+	new->next = NULL;
+	now->next = new;
+	print(node);
 }
 
 void insert(ListNode *node, DATATYPE data, int number) {
     // リストのnumber番目にノードを挿入する
     // プログラミングでは基本0から数え始める
+	ListNode *now = node;
+	for(int i=0;i<number;i++) {
+		if(now->next == NULL) break;
+		now = now->next;
+	}
+	ListNode *new = malloc(sizeof(ListNode));
+	new->data = data;
+	new->next = now->next;
+	now->next = new;
+	print(node);
 }
 
+
 DATATYPE pop(ListNode *node) {
-    // リストの末尾のdataを取得して削除
+	// リストの末尾のdataを取得して削除
+	ListNode *current = node;
+    while (current->next->next != NULL)
+        current = current->next;
+
+    DATATYPE val = current->next->data;
+    free(current->next);
+    current->next = NULL;
+    return val;
 }
 
 DATATYPE dequeue(ListNode *node) {
     // リストの先頭のdataを取得して削除
     // 2番目を先頭にする
+	/*if (node == NULL )
+		return NULL;
+	*/
+	ListNode *temp = node;
+	node = node->next;
+	return temp->data;
 }
 
 DATATYPE delete(ListNode *node, int number) {
     // リストのnumber番目のdataを取得して削除
     // number+1番目をnumber-1番目のnextにつなぐ
+	/*
+	if (node == NULL )
+		return NULL;
+	*/
+	if (number == 0) 
+		return dequeue(node);
+	
+	ListNode *current = node;
+	for (int i = 0; i < number-1 && current->next != NULL; i++)
+		current = current->next;
+	/*
+		if (current->next == NULL) {
+		printf("Invalid index\n");
+		return node;
+	}
+	*/
+	ListNode *temp = current->next;
+	current->next = temp->next;
+	//free(temp);
+	return temp->data;
 }
 
 int main() {
